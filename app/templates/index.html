@@ -8,6 +8,15 @@
 </head>
 <body>
     <h1>Task Manager</h1>
+
+    <div id="add-task-form">
+        <input type="text" id="new-task-title" placeholder="Title" required>
+        <input type="text" id="new-task-desc" placeholder="Description">
+        <button id="add-task-btn">Add Task</button>
+    </div>
+
+    <div id="tasks-container"></div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

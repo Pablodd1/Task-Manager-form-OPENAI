@@ -1,2 +1,20 @@
  * Serving Flask app 'main'
  * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 132-491-319
+127.0.0.1 - - [19/Jan/2026 16:45:29] "[35m[1mPOST /tasks HTTP/1.1[0m" 201 -
+127.0.0.1 - - [19/Jan/2026 16:45:35] "PUT /tasks/3 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:45:41] "DELETE /tasks/1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:45:47] "GET /tasks HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:15] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "GET /static/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "GET /static/script.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "GET /tasks HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "[35m[1mPOST /tasks HTTP/1.1[0m" 201 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "GET /tasks HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "PUT /tasks/4 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Jan/2026 16:48:16] "GET /tasks HTTP/1.1" 200 -
