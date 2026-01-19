@@ -11,12 +11,27 @@ class TaskManagerTestCase(unittest.TestCase):
         tasks.clear()
         tasks.append({'id': 1, 'title': 'Task 1', 'description': 'Desc 1', 'done': False})
 
+    def test_index(self):
+        response = self.app.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Task Manager', response.data)
+
     def test_get_tasks(self):
         response = self.app.get('/tasks')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertEqual(len(data['tasks']), 1)
         self.assertEqual(data['tasks'][0]['title'], 'Task 1')
+
+    def test_get_task(self):
+        response = self.app.get('/tasks/1')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data['task']['title'], 'Task 1')
+
+    def test_get_task_not_found(self):
+        response = self.app.get('/tasks/999')
+        self.assertEqual(response.status_code, 404)
 
     def test_add_task(self):
         new_task = {'title': 'New Task', 'description': 'New Desc'}
