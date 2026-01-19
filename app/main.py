@@ -15,6 +15,13 @@ def index():
 def get_tasks():
     return jsonify({'tasks': tasks})
 
+@app.route('/tasks/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+    task = next((t for t in tasks if t['id'] == task_id), None)
+    if not task:
+        return jsonify({'error': 'Not Found'}), 404
+    return jsonify({'task': task})
+
 @app.route('/tasks', methods=['POST'])
 def add_task():
     if not request.json or not 'title' in request.json:
