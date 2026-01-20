@@ -2,10 +2,7 @@ from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-tasks = [
-    {'id': 1, 'title': 'Task 1', 'description': 'This is the first task.', 'done': False},
-    {'id': 2, 'title': 'Task 2', 'description': 'This is the second task.', 'done': False}
-]
+tasks = []
 
 @app.route('/')
 def index():
