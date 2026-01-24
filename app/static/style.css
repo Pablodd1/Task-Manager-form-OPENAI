@@ -1,46 +1,178 @@
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f6fa;
+    --text-color: #2f3640;
+    --success-color: #4cd137;
+    --warning-color: #fbc531;
+    --danger-color: #e84118;
+    --info-color: #00a8ff;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --radius: 8px;
+}
+
 body {
-    font-family: sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-#add-task-form {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-}
-
-#add-task-form input {
-    margin-right: 10px;
-    padding: 5px;
-}
-
-ul {
-    list-style-type: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
 }
 
-li {
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    padding: 10px;
+.container {
+    width: 100%;
+    max-width: 900px;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #7f8fa6;
+    margin-top: 0;
+}
+
+/* Form Styles */
+.task-form {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
     display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+input, button {
+    padding: 0.8rem;
+    border: 1px solid #dcdde1;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: var(--primary-color);
+}
+
+button#add-task-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+button#add-task-btn:hover {
+    background-color: #357abd;
+}
+
+/* Task List Styles */
+.task-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+}
+
+.task-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-left: 5px solid var(--primary-color);
+    transition: transform 0.2s;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-li span {
-    flex-grow: 1;
+.task-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
 }
 
-li span.done {
-    text-decoration: line-through;
-    color: #888;
+.task-meta {
+    font-size: 0.9rem;
+    color: #718093;
+    display: flex;
+    gap: 1rem;
 }
 
-button {
-    margin-left: 10px;
-    padding: 5px 10px;
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+    background-color: var(--info-color);
+}
+
+.status-Todo { background-color: var(--info-color); }
+.status-In-Progress { background-color: var(--warning-color); }
+.status-Under-Review { background-color: #9c88ff; }
+.status-Done { background-color: var(--success-color); }
+
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: none;
     cursor: pointer;
+    border-radius: var(--radius);
+    color: white;
+}
+
+.btn-start { background-color: var(--warning-color); color: #2f3640; }
+.btn-review { background-color: #9c88ff; }
+.btn-approve { background-color: var(--success-color); }
+.btn-delete { background-color: var(--danger-color); }
+
+@media (max-width: 600px) {
+    .task-form {
+        grid-template-columns: 1fr;
+    }
+    .form-group.full-width {
+        grid-column: span 1;
+    }
 }
