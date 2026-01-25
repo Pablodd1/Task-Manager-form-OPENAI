@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .DS_Store
 flask_output.log
+instance/
+*.db
