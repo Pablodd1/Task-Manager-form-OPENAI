@@ -4,16 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Task Manager</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        // Inject user info from server-side template
+        const CURRENT_USER = {
+            id: {{ user.id }},
+            username: "{{ user.username }}",
+            role: "{{ user.role }}"
+        };
+    </script>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Team Task Manager</h1>
-            <p class="subtitle">Assign, Track, and Review Tasks Efficiently</p>
+            <p class="subtitle">Welcome, <strong>{{ user.username }}</strong> ({{ user.role }}) | <a href="/logout">Logout</a></p>
         </header>
 
+        {% if user.role == 'Admin' %}
+        <div class="admin-panel">
+            <h3>Admin Panel</h3>
+            <div class="task-form">
+                <div class="form-group">
+                    <input type="text" id="new-user-name" placeholder="New Username">
+                </div>
+                <div class="form-group">
+                    <input type="email" id="new-user-email" placeholder="New Email">
+                </div>
+                <div class="form-group">
+                     <select id="new-user-role">
+                        <option value="Staff">Staff</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button id="add-user-btn" class="btn-primary">Create User</button>
+                </div>
+            </div>
+        </div>
+
         <div class="task-form">
+            <h3>Create Task</h3>
             <div class="form-group full-width">
                 <input type="text" id="new-task-title" placeholder="Task Title" required>
             </div>
@@ -21,24 +52,26 @@
                 <input type="text" id="new-task-desc" placeholder="Description">
             </div>
             <div class="form-group">
-                <input type="text" id="new-task-assignee" placeholder="Assignee Name">
-            </div>
-            <div class="form-group">
-                <input type="email" id="new-task-email" placeholder="Assignee Email">
+                <!-- Dropdown for Assignee -->
+                <select id="new-task-assignee-select">
+                    <option value="">Unassigned</option>
+                    <!-- Populated by JS -->
+                </select>
             </div>
             <div class="form-group">
                 <input type="date" id="new-task-due">
             </div>
             <div class="form-group">
-                <button id="add-task-btn">Add Task</button>
+                <button id="add-task-btn" class="btn-primary">Add Task</button>
             </div>
         </div>
+        {% endif %}
 
         <div id="tasks-container">
             <!-- Tasks will be injected here -->
         </div>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
