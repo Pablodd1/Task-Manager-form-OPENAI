@@ -18,6 +18,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', default_d
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# In-Memory Cache
+TASK_CACHE = {}
+
 # Email Configuration
 MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
@@ -64,10 +67,18 @@ def get_tasks():
 
 @app.route('/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
+    # Check Cache
+    if task_id in TASK_CACHE:
+        return jsonify({'task': TASK_CACHE[task_id]})
+
     task = db.session.get(Task, task_id)
     if not task:
         return jsonify({'error': 'Not Found'}), 404
-    return jsonify({'task': task.to_dict()})
+
+    # Update Cache
+    task_dict = task.to_dict()
+    TASK_CACHE[task_id] = task_dict
+    return jsonify({'task': task_dict})
 
 @app.route('/tasks', methods=['POST'])
 def add_task():
@@ -84,7 +95,12 @@ def add_task():
     )
     db.session.add(new_task)
     db.session.commit()
-    return jsonify({'task': new_task.to_dict()}), 201
+
+    # Update Cache
+    task_dict = new_task.to_dict()
+    TASK_CACHE[new_task.id] = task_dict
+
+    return jsonify({'task': task_dict}), 201
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
@@ -104,7 +120,12 @@ def update_task(task_id):
         task.status = request.json['status']
 
     db.session.commit()
-    return jsonify({'task': task.to_dict()})
+
+    # Update Cache
+    task_dict = task.to_dict()
+    TASK_CACHE[task_id] = task_dict
+
+    return jsonify({'task': task_dict})
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
@@ -113,6 +134,11 @@ def delete_task(task_id):
         return jsonify({'error': 'Not Found'}), 404
     db.session.delete(task)
     db.session.commit()
+
+    # Remove from Cache
+    if task_id in TASK_CACHE:
+        del TASK_CACHE[task_id]
+
     return jsonify({'result': True})
 
 def send_email(to_email, subject, body):
