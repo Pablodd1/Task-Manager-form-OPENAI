@@ -1,33 +1,34 @@
 import unittest
 import json
-from app.main import app, db, Task
+import app.main as main_module
+from app.main import app, TASKS, Task
 
 class TaskManagerTestCase(unittest.TestCase):
 
     def setUp(self):
-        # Use in-memory SQLite for testing
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
         self.app = app.test_client()
         self.app.testing = True
 
-        with app.app_context():
-            db.create_all()
-            # Add initial task
-            task = Task(
-                title='Task 1',
-                description='Desc 1',
-                assignee='John',
-                assignee_email='john@example.com',
-                due_date='2023-12-31',
-                status='Todo'
-            )
-            db.session.add(task)
-            db.session.commit()
+        # Reset Global State
+        main_module.TASKS.clear()
+        main_module.NEXT_ID = 1
+
+        # Add initial task
+        task = Task(
+            id=main_module.NEXT_ID,
+            title='Task 1',
+            description='Desc 1',
+            assignee='John',
+            assignee_email='john@example.com',
+            due_date='2023-12-31',
+            status='Todo'
+        )
+        main_module.TASKS[main_module.NEXT_ID] = task
+        main_module.NEXT_ID += 1
 
     def tearDown(self):
-        with app.app_context():
-            db.session.remove()
-            db.drop_all()
+        main_module.TASKS.clear()
+        main_module.NEXT_ID = 1
 
     def test_index(self):
         response = self.app.get('/')
@@ -54,27 +55,22 @@ class TaskManagerTestCase(unittest.TestCase):
         data = json.loads(response.data)
         self.assertEqual(data['task']['title'], 'New Task')
 
-        # Verify DB
-        with app.app_context():
-            tasks = Task.query.all()
-            self.assertEqual(len(tasks), 2)
+        # Verify In-Memory Store
+        self.assertEqual(len(main_module.TASKS), 2)
 
     def test_update_task(self):
         update_data = {'status': 'Done'}
         response = self.app.put('/tasks/1', data=json.dumps(update_data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-        with app.app_context():
-            task = db.session.get(Task, 1)
-            self.assertEqual(task.status, 'Done')
+        task = main_module.TASKS.get(1)
+        self.assertEqual(task.status, 'Done')
 
     def test_delete_task(self):
         response = self.app.delete('/tasks/1')
         self.assertEqual(response.status_code, 200)
 
-        with app.app_context():
-            tasks = Task.query.all()
-            self.assertEqual(len(tasks), 0)
+        self.assertEqual(len(main_module.TASKS), 0)
 
     def test_reminders_simulation(self):
         # Should attempt to send email (but fail/skip because no credentials in test env)
