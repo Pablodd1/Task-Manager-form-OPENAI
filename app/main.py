@@ -8,7 +8,13 @@ app = Flask(__name__)
 
 # Database Configuration
 # Use SQLite for local development, or DATABASE_URL if provided (e.g. Postgres on Vercel)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///tasks.db')
+# On Vercel, if DATABASE_URL is not set, fallback to in-memory SQLite to prevent read-only filesystem errors.
+if os.environ.get('VERCEL'):
+    default_db = 'sqlite:///:memory:'
+else:
+    default_db = 'sqlite:///tasks.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', default_db)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -42,7 +48,10 @@ class Task(db.Model):
 
 # Initialize DB
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+    except Exception as e:
+        print(f"Error initializing database: {e}")
 
 @app.route('/')
 def index():
